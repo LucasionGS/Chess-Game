@@ -1,0 +1,52 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+
+div.board{
+  width: 98vh;
+  height: 98vh;
+  border-style: solid;
+  margin: auto;
+}
+
+div.checkerpiece{
+  width: calc(100%/8);
+  height: calc(100%/8);
+  float: left;
+  background: brown;
+}
+
+div.checkerpiece[type="light"]{
+  background: rgb(255, 252, 207);
+}
+
+div.checkerpiece:hover{
+  box-sizing: border-box;
+  border-style: solid;
+  border-color: lightgreen;
+  border-width: 5px;
+}
+
+img.boardPiece{
+  height: 100%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+img.boardPiece[selected]{
+  background: lightgreen;
+}
+
+div.checkerpiece[valid]{
+  background: rgb(19, 113, 0);
+}
+
+div.checkerpiece[type="light"][valid]{
+  background: rgb(180, 255, 147);
+}
+
+div.checkerpiece[valid][kill], div.checkerpiece[type="light"][valid][kill]{
+  background: rgb(255, 214, 0);
+}

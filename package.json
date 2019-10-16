@@ -1,0 +1,14 @@
+{
+  "name": "chess-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Lucasion",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^6.0.12"
+  }
+}
