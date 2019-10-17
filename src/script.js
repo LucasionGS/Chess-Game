@@ -57,11 +57,35 @@ window.onload = function () {
       }
       if (selected && this.getAttribute("valid") == "true") {
         // KILL OPPOSITE COLOR IF A PIECE IS ALREADY THERE
-        // allCheckers[i].firstChild && pieceObject.instance.color == allCheckers[i].firstChild.instance.color
-        if (this.firstChild) {
+        if (this.firstChild && this.firstChild.instance.color != selected.instance.color) {
           this.removeChild(this.firstChild);
+          selected.instance.setPos(this);
         }
-        selected.instance.setPos(this);
+        else if (
+          this.firstChild
+          && this.firstChild.instance.color == selected.instance.color
+          && this.firstChild.instance.type == "King"
+          && !this.firstChild.instance.hasMoved
+          && !selected.instance.hasMoved
+          && selected.instance.type == "Rook"
+        ) {
+          var rookPosNumber = convertLetterToValue(selected.parentNode.id.substring(0,1));
+          var kingPosNumber = convertLetterToValue(this.id.substring(0,1));
+          console.log("SPECIAL MOVE");
+          console.log(rookPosNumber);
+          console.log(kingPosNumber);
+          if (rookPosNumber > kingPosNumber) {
+            selected.instance.setPos(getCheckerRelativeTo(this, 1, 0))
+            this.firstChild.instance.setPos(getCheckerRelativeTo(this, 2, 0))
+          }
+          else if (rookPosNumber < kingPosNumber) {
+            selected.instance.setPos(getCheckerRelativeTo(this, -1, 0))
+            this.firstChild.instance.setPos(getCheckerRelativeTo(this, -2, 0))
+          }
+        }
+        else {
+          selected.instance.setPos(this);
+        }
       }
     });
   }
@@ -101,6 +125,11 @@ class Piece {
   {
     setPiecePosition(this.object, newPos);
   }
+
+  makeQueen() {
+    new Piece("Queen", this.color, this.object.parentNode);
+    this.object.parentNode.removeChild(this.object);
+  }
 }
 
 function setPiecePosition(pieceObject, newPos) {
@@ -112,6 +141,14 @@ function setPiecePosition(pieceObject, newPos) {
     clearValids();
     clearSelection();
     pieceObject.instance.hasMoved = true;
+    if (pieceObject.instance.type == "Pawn") {
+      if (pieceObject.instance.color == "w" && newPos.id.includes("1")) {
+        pieceObject.instance.makeQueen();
+      }
+      else if (pieceObject.instance.color == "b" && newPos.id.includes("8")) {
+        pieceObject.instance.makeQueen();
+      }
+    }
   }
 }
 
@@ -121,7 +158,6 @@ function calculateValidPositions(pieceObject) {
   var posNumber = +currentPos.getAttribute("id").substring(1,2);
 
   // Pawn movement
-  // TODO: Make the pawn able to move 2 forward if it hasn't moved from start position
   if (pieceObject.instance.type == "Pawn") {
     if (pieceObject.instance.color == "w") {
       var checkerForward = getChecker(posLetter+subFrom(posNumber));
@@ -179,10 +215,10 @@ function calculateValidPositions(pieceObject) {
       if (checkChecker == null) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color) {
+      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color && (!(checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved))) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) {
+      else if ((checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) || (checkChecker.firstChild && checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved)) {
         checkChecker.setValid(true);
         checkChecker.setKill(true);
         break;
@@ -198,11 +234,10 @@ function calculateValidPositions(pieceObject) {
       if (checkChecker == null) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color) {
+      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color && (!(checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved))) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) {
-        checkChecker.setValid(true);
+      else if ((checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) || (checkChecker.firstChild && checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved)) {
         checkChecker.setValid(true);
         break;
       }
@@ -217,10 +252,10 @@ function calculateValidPositions(pieceObject) {
       if (checkChecker == null) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color) {
+      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color && (!(checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved))) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) {
+      else if ((checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) || (checkChecker.firstChild && checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved)) {
         checkChecker.setValid(true);
         checkChecker.setKill(true);
         break;
@@ -236,10 +271,10 @@ function calculateValidPositions(pieceObject) {
       if (checkChecker == null) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color) {
+      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color == pieceObject.instance.color && (!(checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved))) {
         break;
       }
-      else if (checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) {
+      else if ((checkChecker.firstChild && checkChecker.firstChild.instance.color != pieceObject.instance.color) || (checkChecker.firstChild && checkChecker.firstChild.instance.type == "King" && !checkChecker.firstChild.instance.hasMoved && !pieceObject.instance.hasMoved)) {
         checkChecker.setValid(true);
         checkChecker.setKill(true);
         break;
@@ -331,7 +366,7 @@ function calculateValidPositions(pieceObject) {
     }
   }
 
-
+  // Knight Movement
   if (pieceObject.instance.type == "Knight") {
     const validKnightPos = [
       [1,2],
@@ -641,7 +676,6 @@ function calculateValidPositions(pieceObject) {
       checkChecker = getCheckerAt.Right(checkChecker);
     }
   }
-
 }
 
 function clearValids() {
@@ -892,7 +926,7 @@ const getCheckerAt = {
   },
 }
 
-function getCheckerRelativeTo(checkerObject, relX, relY) {
+function getCheckerRelativeTo(checkerObject, relX = 0, relY = 0) {
   try {
     var posLetter = checkerObject.getAttribute("id").substring(0,1);
     var posNumber = +checkerObject.getAttribute("id").substring(1,2);
@@ -916,6 +950,37 @@ function getCheckerRelativeTo(checkerObject, relX, relY) {
 
     return getChecker(posLetter+ posNumber);
   } catch (e) {
+    return null;
+  }
+}
+
+function convertLetterToValue(letter) {
+  letter = letter.substring(0,1).toLowerCase();
+  if (letter == "a") {
+    return 1;
+  }
+  else if (letter == "b") {
+    return 2;
+  }
+  else if (letter == "c") {
+    return 3;
+  }
+  else if (letter == "d") {
+    return 4;
+  }
+  else if (letter == "e") {
+    return 5;
+  }
+  else if (letter == "f") {
+    return 6;
+  }
+  else if (letter == "g") {
+    return 7;
+  }
+  else if (letter == "h") {
+    return 8;
+  }
+  else {
     return null;
   }
 }
