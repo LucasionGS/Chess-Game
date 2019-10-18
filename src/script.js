@@ -128,6 +128,7 @@ class Piece {
 
   makeQueen() {
     new Piece("Queen", this.color, this.object.parentNode);
+    //new Notif("A Queen was gained! ("+this.color+")");
     this.object.parentNode.removeChild(this.object);
   }
 }
